@@ -7,7 +7,7 @@ let config={
 }
 let db=null
 
-test.before(async()=>{
+test.beforeEach(async()=>{
   const setupDatabase=require('../')
   db=await setupDatabase(config)
 })
