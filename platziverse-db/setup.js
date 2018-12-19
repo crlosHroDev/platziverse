@@ -1,11 +1,24 @@
 'use strict'
 
 const debug=require('debug')('platziverse:db:setup')
-
+const inquirer=require('inquirer')
+const chalk=require('chalk')
 const db=require('./')
 
+const prompt=inquirer.createPromptModule()//este permite hacer la pregunta al usuario y retorna una promesa
+
 async function setup(){
+  const answer =await prompt([
+    {
+      type:'confirm',
+      name:'setup',//la respuesta la guardaria en una propiedad llamada setup
+      message:'This will destroy your database, are you sure?'
+    }
+  ])
   
+  if(!answer.setup){
+    return console.log('Nothing happened :)')
+  }
   const config={
     database:process.env.DB_NAME||'platziverse', //valores como variables de entorno o por defecto para desarrollo platziverse
     username:process.env.DB_USER ||'platzi',
@@ -22,7 +35,7 @@ async function setup(){
 }
 
 function handleFatalError(err){
-  console.error(err.message)
+  console.error(`${chalk.red('[fatal error]')}` ${err.message})
   console.error(err.stack)
   process.exit(1)//proceso de error 1 para finalizar
 }
