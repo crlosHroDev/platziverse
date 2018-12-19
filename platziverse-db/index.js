@@ -16,7 +16,10 @@ module.exports=async function (config){
   MetricModel.belongsTo(AgentModel)
   
   await sequelize.authenticate() //validar que la BD este bien validada
- 
+  
+  if (config.setup){
+    await sequelize.sync({force:true})//obliga a que se cree la bd desde 0, borrando si ya esta una existente
+  }
   
   const Agent={}
   const Metric={}
