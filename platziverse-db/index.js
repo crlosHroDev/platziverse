@@ -3,6 +3,7 @@
 const setupDatabase=require('./lib/db')
 const setupAgentModel=require('./models/agent')
 const setupMetricModel=require('./models/metric')
+const  setupAgent=require('./lib/agent')
 const defaults=require('defaults')
 
 module.exports=async function (config){
@@ -32,7 +33,7 @@ module.exports=async function (config){
     await sequelize.sync({force:true})//obliga a que se cree la bd desde 0, borrando si ya esta una existente
   }
   
-  const Agent={}
+  const Agent=setupAgent(AgentModel)
   const Metric={}
   
   return{
