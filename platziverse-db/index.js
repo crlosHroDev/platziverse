@@ -3,10 +3,21 @@
 const setupDatabase=require('./lib/db')
 const setupAgentModel=require('./models/agent')
 const setupMetricModel=require('./models/metric')
-
+const defaults=require('defaults')
 
 module.exports=async function (config){
-  
+  config=defaults(config,{//Todo lo del objeto de config lo vamos a obtener y si no estan definidas se toman por defecto:
+    dialect:'sqlite',
+    pool:{
+      max:10,
+      min:0,
+      idle:10000 //si la conexion no pasa nada en 10 segundos sale de la conexion
+    },
+    query:{
+      raw:true//me entregue objetos de js json sencillos
+    }
+    
+  })  
   const sequelize=setupDatabase(config)//Aqui ya llamo el singleton
   const AgentModel=setupAgentModel(config)
   const MetricModel=setupMetricModel(config)
