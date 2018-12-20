@@ -1,6 +1,6 @@
 'use strict'
 
-const debud=require('debug')('platziverse:mqtt')
+const debug=require('debug')('platziverse:mqtt')
 const mosca=require('mosca')
 const redis=require('redis')
 const chalk=require('chalk')
@@ -19,6 +19,30 @@ const settings={
 //instanciar el servidor
 const server=new mosca.Server(settings)
 
+server.on('clientConnected',client=>{
+  debug(`Client Connected: ${client.id}`) //este id es autogenerado por mqtt
+})
+
+server.on('clientDisconnected',client=>{
+  debug(`Client Disonnected: ${client.id}`) 
+})
+
+server.on('published',(packet,client)=>{
+  debug(`Received: ${packet.topic}`)//topic es el tipo de mensaje
+  debug(`Payload: ${packet.payload}`) //payload es el objeto, la info enviada
+})
+
 server.on('ready',()=>{
   console.log(`${chalk.green('[platziverse-mqtt]')} server is running`)
 })
+
+server.on('error',handleFatalError)
+
+function handleFatalError(err){
+  console.error(`${chalk.red('fatal error')} ${err.message}`)
+  console.error(err.stack)
+  process.exit(1)
+}
+
+process.on('uncaughtException',handleFatalError)
+process.on('unhandleRejection',handleFatalError)
