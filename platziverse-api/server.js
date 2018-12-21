@@ -26,14 +26,15 @@ app.use((err,req,res,next)=>{//el objeto de next siempre lo va a tener el middle
     console.error(err.stack)
     process.exit(1)
   }
+  if(!module.parent){ //sino lo estoy requiriendo el modulo el entraria este if, esto se hace con el fin de poder usarlo en las pruebas
+     process.on('uncaughtException',handleFatalError)
+     process.on('unhandledRejection',handleFatalError)
   
-  process.on('uncaughtException',handleFatalError)
-  process.on('unhandledRejection',handleFatalError)
-  
-  res.status(500).send({error:err.message})
-})
+    res.status(500).send({error:err.message})
 
-server.listen(port,()=>{
-  console.log(`${chalk.green('[platziverse-api]')} server listening on port ${port}`)
-})
+    server.listen(port,()=>{
+        console.log(`${chalk.green('[platziverse-api]')} server listening on port ${port}`)
+    }) 
+  }
 
+module.exports=server
