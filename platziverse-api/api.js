@@ -11,8 +11,12 @@ api.get('/agents',(req,res)=>{
 })
 
 
-api.get('/agents/:uuid',(req,res)=>{ //luego de los dos puntos uuid llegaria al objeto como un parametro
+api.get('/agents/:uuid',(req,res,next)=>{ //luego de los dos puntos uuid llegaria al objeto como un parametro
   const {uuid}=req.params
+  
+  if(uuid!='yyy'){ //manejo del error dentro de la API
+    return next(new Error('Agent not found'))
+  }
   res.send({uuid})
 }) 
 api.get('/metrics/:uuid',(req,res)=>{
